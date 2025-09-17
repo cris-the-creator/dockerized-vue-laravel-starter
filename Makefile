@@ -5,13 +5,12 @@ none:
 	@echo "Please don't run make without an argument, i have no idea what to do now :O"
 
 init:
-	@chmod +x docker/setup.sh
-	@./docker/setup.sh
-
-	@$(MAKE) up
-	docker-compose exec backend php artisan key:generate
-	@$(MAKE) migration
+	$(MAKE) up
 	docker-compose exec frontend npm install
+	docker-compose exec backend cp .env.example .env
+	docker-compose exec backend composer install
+	docker-compose exec backend php artisan key:generate
+	docker-compose exec backend php artisan migrate
 
 up:
 	@docker-compose up -d
